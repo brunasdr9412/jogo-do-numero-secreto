@@ -1,2 +1,2 @@
 # jogo-do-numero-secreto
-Creation of a game to guess the secret number, using JS, CSS and HTML.//Criação de um jogo para adivinhar o número secreto, utilizando JS, CSS e HTML.//Creación de un juego para adivinar el número secreto, utilizando JS, CSS y HTML.//Création d'un jeu pour deviner le numéro secret, en utilisant JS, CSS et HTML.//Creazione di un gioco...
+Creation of a game to guess the secret number, using JS, CSS and HTML.//Projeto criado como resultado das aulas da Alura sobre programação básica.
