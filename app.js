@@ -91,7 +91,7 @@ function checkGuess() {
     if (guess === secretNumber) {
         gameFinished = true;
 
-        const attemptWord = attempts === 1 ? "tentativa" : "tentativas";
+        const attemptWord = attempts === 1 ? "teste" : "testes";
         showMessage(`ACERTOU! 🎉💗<br>Você encontrou o número secreto em ${attempts} ${attemptWord}!`);
 
         guessButton.disabled = true;
