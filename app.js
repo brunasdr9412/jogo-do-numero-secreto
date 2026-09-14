@@ -1,73 +1,155 @@
-let listaDeNumerosSorteados = [];
-let numeroLimite = 10;
-let numeroSecreto = gerarNumeroAleatorio();
-let tentativas = 1;
+const maximumNumber = 10;
 
-function exibirTextoNaTela(tag, texto) {
-    let campo = document.querySelector(tag);
-    campo.innerHTML = texto;
-    responsiveVoice.speak(texto, 'Brazilian Portuguese Female', {rate:1.2});
+let drawnNumbers = [];
+let secretNumber = generateRandomNumber();
+let attempts = 0;
+let minimumHint = 1;
+let maximumHint = maximumNumber;
+let gameFinished = false;
+
+const guessForm = document.querySelector("#guess-form");
+const guessInput = document.querySelector("#guess-input");
+const guessButton = document.querySelector("#guess-button");
+const restartButton = document.querySelector("#restart-button");
+const messageBox = document.querySelector("#game-message p");
+const attemptCount = document.querySelector("#attempt-count");
+const minimumNumberDisplay = document.querySelector("#minimum-number");
+const maximumNumberDisplay = document.querySelector("#maximum-number");
+const clock = document.querySelector("#clock");
+
+function generateRandomNumber() {
+    if (drawnNumbers.length === maximumNumber) {
+        drawnNumbers = [];
+    }
+
+    const chosenNumber = Math.floor(Math.random() * maximumNumber) + 1;
+
+    if (drawnNumbers.includes(chosenNumber)) {
+        return generateRandomNumber();
+    }
+
+    drawnNumbers.push(chosenNumber);
+    return chosenNumber;
 }
 
-function exibirMensagemInicial() {
-    exibirTextoNaTela('h1', 'Jogo do número secreto');
-    exibirTextoNaTela('p', 'Escolha um número entre 1 e 10');
+function speakMessage(message) {
+    if (typeof responsiveVoice !== "undefined") {
+        responsiveVoice.cancel();
+        responsiveVoice.speak(message, "Brazilian Portuguese Female", { rate: 1.05 });
+    }
 }
 
-exibirMensagemInicial();
+function showMessage(message, shouldSpeak = true) {
+    messageBox.innerHTML = message;
 
-function verificarChute() {
-    let chute = document.querySelector('input').value;
-    
-    if (chute == numeroSecreto) {
-        exibirTextoNaTela('h1', 'Acertou!');
-        let palavraTentativa = tentativas > 1 ? 'tentativas' : 'tentativa';
-        let mensagemTentativas = `Você descobriu o número secreto com ${tentativas} ${palavraTentativa}!`;
-        exibirTextoNaTela('p', mensagemTentativas);
-        document.getElementById('reiniciar').removeAttribute('disabled');
+    if (shouldSpeak) {
+        const spokenMessage = message
+            .replace(/<br\s*\/?>/gi, ". ")
+            .replace(/<[^>]*>/g, "")
+            .replace(/[💗💜⭐✨🎉♡♥]/g, "");
+
+        speakMessage(spokenMessage);
+    }
+}
+
+function updateStats() {
+    attemptCount.textContent = attempts;
+    minimumNumberDisplay.textContent = minimumHint;
+    maximumNumberDisplay.textContent = maximumHint;
+}
+
+function validateGuess(value) {
+    if (value === "") {
+        return "Digite um número antes de chutar! 💗";
+    }
+
+    const guess = Number(value);
+
+    if (!Number.isInteger(guess) || guess < 1 || guess > maximumNumber) {
+        return `Escolha um número inteiro entre 1 e ${maximumNumber}. ✨`;
+    }
+
+    return null;
+}
+
+function checkGuess() {
+    if (gameFinished) {
+        return;
+    }
+
+    const validationMessage = validateGuess(guessInput.value);
+
+    if (validationMessage) {
+        showMessage(validationMessage);
+        guessInput.focus();
+        return;
+    }
+
+    const guess = Number(guessInput.value);
+    attempts += 1;
+
+    if (guess === secretNumber) {
+        gameFinished = true;
+
+        const attemptWord = attempts === 1 ? "tentativa" : "tentativas";
+        showMessage(`ACERTOU! 🎉💗<br>Você encontrou o número secreto em ${attempts} ${attemptWord}!`);
+
+        guessButton.disabled = true;
+        guessInput.disabled = true;
+        restartButton.disabled = false;
+    } else if (guess < secretNumber) {
+        minimumHint = Math.max(minimumHint, guess + 1);
+        showMessage("Quase! 💗<br>O número secreto é <strong>MAIOR</strong>.");
     } else {
-        if (chute > numeroSecreto) {
-            exibirTextoNaTela('p', 'O número secreto é menor');
-        } else {
-            exibirTextoNaTela('p', 'O número secreto é maior');
-        }
-        tentativas++;
-        limparCampo();
+        maximumHint = Math.min(maximumHint, guess - 1);
+        showMessage("Quase! 💜<br>O número secreto é <strong>MENOR</strong>.");
+    }
+
+    updateStats();
+
+    if (!gameFinished) {
+        guessInput.value = "";
+        guessInput.focus();
     }
 }
 
-function gerarNumeroAleatorio() {
-    let numeroEscolhido = parseInt(Math.random() * numeroLimite + 1);
-    let quantidadeDeElementosNaLista = listaDeNumerosSorteados.length;
+function restartGame() {
+    secretNumber = generateRandomNumber();
+    attempts = 0;
+    minimumHint = 1;
+    maximumHint = maximumNumber;
+    gameFinished = false;
 
-    if (quantidadeDeElementosNaLista == numeroLimite) {
-        listaDeNumerosSorteados = [];
+    guessInput.disabled = false;
+    guessButton.disabled = false;
+    restartButton.disabled = true;
+    guessInput.value = "";
+
+    updateStats();
+    showMessage("Pronta para começar?<br>Boa sorte! 💜", false);
+    guessInput.focus();
+}
+
+function updateClock() {
+    if (!clock) {
+        return;
     }
-    if (listaDeNumerosSorteados.includes(numeroEscolhido)) {
-        return gerarNumeroAleatorio();
-    } else {
-        listaDeNumerosSorteados.push(numeroEscolhido);
-        console.log(listaDeNumerosSorteados)
-        return numeroEscolhido;
-    }
+
+    const now = new Date();
+
+    clock.textContent = now.toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
 }
 
-function limparCampo() {
-    chute = document.querySelector('input');
-    chute.value = '';
-}
+guessForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    checkGuess();
+});
 
-function reiniciarJogo() {
-    numeroSecreto = gerarNumeroAleatorio();
-    limparCampo();
-    tentativas = 1;
-    exibirMensagemInicial();
-    document.getElementById('reiniciar').setAttribute('disabled', true)
-}
+restartButton.addEventListener("click", restartGame);
 
-
-
-
-
-
-
+updateStats();
+updateClock();
+setInterval(updateClock, 1000);

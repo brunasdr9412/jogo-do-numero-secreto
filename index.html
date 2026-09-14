@@ -1,41 +1,110 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+    <meta name="theme-color" content="#f6a9dd">
+    <meta name="description" content="Jogo do Número Secreto com visual retrô inspirado nos computadores dos anos 90.">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Inter:wght@400;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <title>JS Game</title>
-</head>
 
-<body>
-
-    <div class="container">
-        <div class="container__conteudo">
-            <div class="container__informacoes">
-                <div class="container__texto">
-                    <h1>Adivinhe o <span class="container__texto-azul">numero secreto</span></h1>
-                    <p class="texto__paragrafo">Escolha um número entre 1 a 10</p>
-                </div>
-                <input type="number" min="1" max="10" class="container__input">
-                <div class="chute container__botoes">
-                    <button onclick="verificarChute()" class="container__botao">Chutar</button>
-                    <button onclick="reiniciarJogo()" id="reiniciar" class="container__botao" disabled>Novo jogo</button>
-                </div>
-            </div>
-            <img src="./img/ia.png" alt="Uma pessoa olhando para a esquerda" class="container__imagem-pessoa" />
-        </div>
-    </div>
-
-
-
-
+    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <script src="app.js" defer></script>
-</body>
 
+    <title>Jogo do Número Secreto.exe</title>
+</head>
+<body>
+    <div class="desktop">
+        <aside class="desktop-icons" aria-label="Atalhos decorativos">
+            <div class="desktop-icon"><span class="desktop-icon__image">🖥️</span><span>Meu<br>Computador</span></div>
+            <div class="desktop-icon"><span class="desktop-icon__image">📁</span><span>Meus Jogos</span></div>
+            <div class="desktop-icon"><span class="desktop-icon__image">💗</span><span>Sonhe<br>Planeje<br>Conquiste</span></div>
+            <div class="desktop-icon"><span class="desktop-icon__image pixel-cat">ฅ^•ﻌ•^ฅ</span><span>Você<br>consegue!</span></div>
+        </aside>
+
+        <main class="workspace">
+            <section class="retro-window game-window" aria-labelledby="game-title">
+                <header class="window-titlebar">
+                    <div class="window-titlebar__title"><span>💖</span><span>Jogo do Número Secreto.exe</span></div>
+                    <div class="window-controls" aria-hidden="true"><span>─</span><span>□</span><span>×</span></div>
+                </header>
+
+                <div class="window-body">
+                    <div class="hero">
+                        <div class="hero__sparkle">✦</div>
+                        <h1 id="game-title">JOGO DO<br>NÚMERO SECRETO</h1>
+                        <p class="hero__subtitle">Adivinhe o número entre <strong>1 e 10</strong>!</p>
+                    </div>
+
+                    <div class="game-panel">
+                        <div class="computer-card" aria-hidden="true">
+                            <div class="computer">
+                                <div class="computer__screen"><span>♥</span></div>
+                                <div class="computer__base"></div>
+                            </div>
+                        </div>
+
+                        <div class="stats-card" aria-label="Informações da partida">
+                            <div class="stat-row"><span>💗</span><span>Tentativas:</span><strong id="attempt-count">0</strong></div>
+                            <div class="stat-row"><span>⭐</span><span>Maior número:</span><strong id="maximum-number">10</strong></div>
+                            <div class="stat-row"><span>💜</span><span>Menor número:</span><strong id="minimum-number">1</strong></div>
+                        </div>
+                    </div>
+
+                    <form class="guess-card" id="guess-form" novalidate>
+                        <label for="guess-input">☻ Digite seu palpite:</label>
+                        <input id="guess-input" class="guess-input" type="number" min="1" max="10"
+                               inputmode="numeric" autocomplete="off" placeholder="Ex.: 5"
+                               aria-describedby="game-message">
+
+                        <div class="button-row">
+                            <button class="retro-button retro-button--primary" id="guess-button" type="submit">♥ CHUTAR ♥</button>
+                            <button class="retro-button retro-button--secondary" id="restart-button" type="button" disabled>↻ NOVO JOGO</button>
+                        </div>
+                    </form>
+
+                    <div class="message-box" id="game-message" role="status" aria-live="polite">
+                        <span class="message-box__icon">⭐</span>
+                        <p>Pronta para começar?<br>Boa sorte! 💜</p>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="side-panel">
+                <section class="retro-window tips-window">
+                    <header class="window-titlebar window-titlebar--small">
+                        <div class="window-titlebar__title"><span>💗</span><span>Dicas.txt</span></div>
+                        <div class="window-controls" aria-hidden="true"><span>─</span><span>□</span><span>×</span></div>
+                    </header>
+
+                    <div class="notepad">
+                        <div class="notepad__rings" aria-hidden="true">
+                            <span></span><span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                        <h2>Lembre-se:</h2>
+                        <p>💗 Se o seu palpite for menor, o número secreto é maior.</p>
+                        <p>💗 Se o seu palpite for maior, o número secreto é menor.</p>
+                        <p>💗 Você pode tentar quantas vezes precisar!</p>
+                        <div class="notepad__doodle">〰〰 ☺</div>
+                    </div>
+                </section>
+
+                <div class="sticky-note">
+                    <span class="sticky-note__clip">📎</span>
+                    <p>Grandes conquistas começam com pequenos palpites! ♡</p>
+                    <span class="sticky-note__sparkle">✧</span>
+                </div>
+            </aside>
+        </main>
+
+        <footer class="taskbar" aria-hidden="true">
+            <div class="start-button"><span>💾</span><strong>Iniciar</strong></div>
+            <div class="taskbar-app">💗 Jogo do Número Secreto</div>
+            <div class="taskbar-clock"><span>🔊</span><span id="clock">--:--</span></div>
+        </footer>
+    </div>
+</body>
 </html>
